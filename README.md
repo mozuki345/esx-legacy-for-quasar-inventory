@@ -31,12 +31,16 @@ What changed from esx-legacy ?
 
 ->> esx_statut :
 - Literaly drag and dropped from quasar's github to my resources file. (https://github.com/quasar-scripts/esx_status)
+
 ->> esx_basicneeds :
 - same for basicneeds, refer to his version for more informations. (https://github.com/quasar-scripts/esx_basicneeds)
+
 ->> esx_ambulancejob :
 - removeItemsAfterRPDeath has been edited to be compatible with qs-core. (only works if you setted it on in the job config)
+
 ->> esx_policejob :
 - OpenBodySearchMenu function has beed edited too. you can open an inventory in the menu instead of using native 'steal' option.
+
 ->> esx_property :
 - OpenRoomInventoryMenu function has been edited, now you can open
 
