@@ -27,7 +27,7 @@ What changed from esx-legacy ?
 - disabled inventory, moved to licence and paycheck changed.
 - some client and server function edited.
 - Duplicate commands have been removed, and the others were edited to work with inventory.
-------------------- ESX
+
 ->> esx_statut :
 - Literaly drag and dropped from quasar's github to my resources file. (https://github.com/quasar-scripts/esx_status)
 
