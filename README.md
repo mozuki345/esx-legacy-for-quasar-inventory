@@ -16,7 +16,7 @@ How can I install it ?
 - try to run the server, be patient the first time and check if there are any errors..
 - and enjoy ! :)
 
---------------------------------------
+
 What changed from esx-legacy ?
 
 ->> Voice and Database :
@@ -27,19 +27,15 @@ What changed from esx-legacy ?
 - disabled inventory, moved to licence and paycheck changed.
 - some client and server function edited.
 - Duplicate commands have been removed, and the others were edited to work with inventory.
-------------------- ESX
+
 ->> esx_statut :
 - Literaly drag and dropped from quasar's github to my resources file. (https://github.com/quasar-scripts/esx_status)
-
 ->> esx_basicneeds :
 - same for basicneeds, refer to his version for more informations. (https://github.com/quasar-scripts/esx_basicneeds)
-------------------- Jobs
 ->> esx_ambulancejob :
 - removeItemsAfterRPDeath has been edited to be compatible with qs-core. (only works if you setted it on in the job config)
-
 ->> esx_policejob :
 - OpenBodySearchMenu function has beed edited too. you can open an inventory in the menu instead of using native 'steal' option.
-------------------- Other scripts
 ->> esx_property :
 - OpenRoomInventoryMenu function has been edited, now you can open
 
