@@ -6,9 +6,10 @@ How can I install it ?
 
 --> Download :
 - download this repository, latest fivem artifact and also download [inventory] assets from keymaster.fivem.net
+- don't forget to download quasar's progressbar. (https://github.com/quasar-scripts/progressbar)
 
 --> Setup :
-- config the server.cfg file, install the artifact, drop the inventory asset somewhere in /resources .
+- config the server.cfg file, install the artifact, drop the inventory asset and progressbar somewhere in /resources .
 - start xampp and create your database(utf8_general_ci), import legacy.sql and then inventory sql.
 - Config anything else you would like to change.
 
@@ -41,7 +42,7 @@ What changed from esx-legacy ?
 - OpenBodySearchMenu function has beed edited too. you can open an inventory in the menu instead of using native 'steal' option.
 
 ->> esx_property :
-- OpenRoomInventoryMenu function has been edited, now you can open
+- OpenRoomInventoryMenu function has been edited, now you can open it from the menu.
 
 (If you want, you can type 'Quasar' in vscode and you will find all modifications.)
 
