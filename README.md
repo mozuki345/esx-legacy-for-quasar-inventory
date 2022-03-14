@@ -21,7 +21,7 @@ What changed from esx-legacy ?
 
 ->> Voice and Database :
 - esx_voice replaced by pma-voice.
-- oxmysql updated to 2.1.1. (if you use quasar-smartphone, you won't need to update it.)
+- oxmysql updated to 2.1.0. (if you use quasar-smartphone, you won't need to update it.)
 
 ->> es_extended :
 - disabled inventory, moved to licence and paycheck changed.
