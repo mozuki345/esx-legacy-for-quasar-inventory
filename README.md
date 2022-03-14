@@ -18,7 +18,7 @@ How can I install it ?
 - and enjoy your new server ! :)
 
 --------------------------------------
-What changed from the latest release (MY esx-legacy 1.5 version) ?
+What changed from the latest release (esx-legacy-for-quasar-inventory 1.5) ?
 
 --> Updated resources :
 - Obviously a lot of esx scripts were update (hehe ^^), check esx-legacy 1.6 changelog for more informations.
