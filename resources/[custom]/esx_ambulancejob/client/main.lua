@@ -4,20 +4,13 @@ isDead, isSearched, medic = false, false, 0
 
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
-	ESX.PlayerData = xPlayer
 	ESX.PlayerLoaded = true
 end)
 
 RegisterNetEvent('esx:onPlayerLogout')
 AddEventHandler('esx:onPlayerLogout', function()
 	ESX.PlayerLoaded = false
-	ESX.PlayerData = {}
 	firstSpawn = true
-end)
-
-RegisterNetEvent('esx:setJob')
-AddEventHandler('esx:setJob', function(job)
-	ESX.PlayerData.job = job
 end)
 
 AddEventHandler('esx:onPlayerSpawn', function()
@@ -55,37 +48,30 @@ CreateThread(function()
 		AddTextComponentSubstringPlayerName(_U('blip_hospital'))
 		EndTextCommandSetBlipName(blip)
 	end
-end)
 
--- Disable most inputs when dead
-CreateThread(function()
-	while true do
-		Wait(0)
-
+	while true do 
+		local Sleep = 1500
+		
 		if isDead then
+			Sleep = 0
 			DisableAllControlActions(0)
 			EnableControlAction(0, 47, true)
 			EnableControlAction(0, 245, true)
 			EnableControlAction(0, 38, true)
-		else
-			Wait(500)
-		end
-	end
-end)
 
-CreateThread(function()
-	while true do
-		Wait(0)
-		if isDead and isSearched then
-			local playerPed = PlayerPedId()
-			local ped = GetPlayerPed(GetPlayerFromServerId(medic))
-			isSearched = false
-
-			AttachEntityToEntity(playerPed, ped, 11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
-			Wait(1000)
-			DetachEntity(playerPed, true, false)
-			ClearPedTasksImmediately(playerPed)
+			if isSearched then
+				local playerPed = PlayerPedId()
+				local ped = GetPlayerPed(GetPlayerFromServerId(medic))
+				isSearched = false
+	
+				AttachEntityToEntity(playerPed, ped, 11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 2, true)
+				Wait(1000)
+				DetachEntity(playerPed, true, false)
+				ClearPedTasksImmediately(playerPed)
+			end
 		end
+
+		Wait(Sleep)
 	end
 end)
 
@@ -304,6 +290,22 @@ function StartDeathTimer()
 	end)
 end
 
+function GetClosestRespawnPoint()
+	local PlyCoords = GetEntityCoords(PlayerPedId())
+	local ClosestDist,ClosestHosptial, ClostestCoord = 10000, {}, nil
+
+	for k,v in pairs(Config.RespawnPoints) do
+		local Distance = #(PlyCoords - vector3(v.coords.x, v.coords.y, v.coords.z))
+		if Distance <= ClosestDist then
+			ClosestDist = Distance
+			ClosestHosptial = v
+			ClostestCoord = vector3(v.coords.x, v.coords.y, v.coords.z)
+		end
+	end
+
+	return ClostestCoord, ClosestHosptial
+end
+
 function RemoveItemsAfterRPDeath()
 	TriggerServerEvent('esx_ambulancejob:setDeathStatus', false)
 
@@ -315,14 +317,10 @@ function RemoveItemsAfterRPDeath()
 		end
 
 		ESX.TriggerServerCallback('esx_ambulancejob:removeItemsAfterRPDeath', function()
-			local formattedCoords = {
-				x = Config.RespawnPoint.coords.x,
-				y = Config.RespawnPoint.coords.y,
-				z = Config.RespawnPoint.coords.z
-			}
+			local RepspawnCoords, ClosestHosptial = GetClosestRespawnPoint()
 
 			ESX.SetPlayerData('loadout', {})
-			RespawnPed(PlayerPedId(), formattedCoords, Config.RespawnPoint.heading)
+			RespawnPed(PlayerPedId(), RepspawnCoords, ClosestHosptial.heading)
 
 			AnimpostfxStop('DeathFailOut')
 			DoScreenFadeIn(800)

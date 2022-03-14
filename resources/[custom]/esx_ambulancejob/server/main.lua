@@ -1,29 +1,20 @@
 local playersHealing, deadPlayers = {}, {}
 
--- Here's another modification for Quasar Inventory
+-- Edit for Quasar Inventory
 QS = nil
 TriggerEvent('qs-core:getSharedObject', function(library) QS = library end)
 
+if GetResourceState("esx_phone") ~= 'missing' then
 TriggerEvent('esx_phone:registerNumber', 'ambulance', _U('alert_ambulance'), true, true)
+end
 
+if GetResourceState("esx_society") ~= 'missing' then
 TriggerEvent('esx_society:registerSociety', 'ambulance', 'Ambulance', 'society_ambulance', 'society_ambulance', 'society_ambulance', {type = 'public'})
+end
 
 RegisterNetEvent('esx_ambulancejob:revive')
 AddEventHandler('esx_ambulancejob:revive', function(playerId)
 	playerId = tonumber(playerId)
-	if source == '' and GetInvokingResource() == 'monitor' then -- txAdmin support
-        local xTarget = ESX.GetPlayerFromId(playerId)
-        if xTarget then
-            if deadPlayers[playerId] then
-                print(_U('revive_complete', xTarget.name))
-                xTarget.triggerEvent('esx_ambulancejob:revive')
-            else
-                print(_U('player_not_unconscious'))
-            end
-        else
-            print(_U('revive_fail_offline'))
-        end
-	else
 		local xPlayer = source and ESX.GetPlayerFromId(source)
 
 		if xPlayer and xPlayer.job.name == 'ambulance' then
@@ -46,6 +37,14 @@ AddEventHandler('esx_ambulancejob:revive', function(playerId)
 				xPlayer.showNotification(_U('revive_fail_offline'))
 			end
 		end
+end)
+
+AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
+	if GetInvokingResource() ~= "monitor" or type(eventData) ~= "table" or type(eventData.id) ~= "number" then
+		return
+	end
+	if deadPlayers[eventData.id] then
+		TriggerClientEvent('esx_ambulancejob:revive', eventData.id)
 	end
 end)
 
@@ -101,7 +100,7 @@ AddEventHandler('esx_ambulancejob:putInVehicle', function(target)
 	end
 end)
 
--- Here's another modification for Quasar Inventory
+-- Edit for Quasar Inventory
 ESX.RegisterServerCallback('esx_ambulancejob:removeItemsAfterRPDeath', function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
 	local qPlayer = QS.GetPlayerFromId(source)
@@ -275,12 +274,7 @@ end)
 ESX.RegisterServerCallback('esx_ambulancejob:getDeathStatus', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	MySQL.scalar('SELECT is_dead FROM users WHERE identifier = ?', {xPlayer.identifier}, function(isDead)
-
-		if isDead == 1 then
-			cb(true)
-		else
-			cb(false)
-		end
+		cb(isDead)
 	end)
 end)
 

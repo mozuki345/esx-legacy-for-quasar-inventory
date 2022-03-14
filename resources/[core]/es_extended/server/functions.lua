@@ -124,14 +124,14 @@ function ESX.RegisterCommand(name, group, cb, allowConsole, suggestion)
 				if playerId == 0 then
 					print(('[^3WARNING^7] %s^7'):format(error))
 				else
-					xPlayer.triggerEvent('chat:addMessage', {args = {'^1SYSTEM', error}})
+					xPlayer.showNotification(error)
 				end
 			else
 				cb(xPlayer or false, args, function(msg)
 					if playerId == 0 then
 						print(('[^3WARNING^7] %s^7'):format(msg))
 					else
-						xPlayer.triggerEvent('chat:addMessage', {args = {'^1SYSTEM', msg}})
+						xPlayer.showNotification(msg)
 					end
 				end)
 			end
@@ -213,7 +213,7 @@ function ESX.GetPlayers()
 	local sources = {}
 
 	for k,v in pairs(ESX.Players) do
-		table.insert(sources, k)
+		sources[#sources + 1] = k
 	end
 
 	return sources
@@ -224,10 +224,10 @@ function ESX.GetExtendedPlayers(key, val)
 	for k, v in pairs(ESX.Players) do
 		if key then
 			if (key == 'job' and v.job.name == val) or v[key] == val then
-				table.insert(xPlayers, v)
+				xPlayers[#xPlayers + 1] = v
 			end
 		else
-			table.insert(xPlayers, v)
+			xPlayers[#xPlayers + 1] = v
 		end
 	end
 	return xPlayers
@@ -254,15 +254,16 @@ function ESX.GetIdentifier(playerId)
 	end
 end
 
+-- Edit for Quasar Inventory
 function ESX.RegisterUsableItem(item, cb)
 	TriggerEvent('inventory:server:useable', item, cb)
 end
 
--- Here's another modification for quasar inventory
-function ESX.UseItem(source, item)
-	Core.UsableItemsCallbacks[item](source, item)
+function ESX.UseItem(source, item, data)
+	Core.UsableItemsCallbacks[item](source, item, data)
 end
--- Here's another modification for quasar inventory
+
+-- Edit for Quasar Inventory
 function ESX.GetItemLabel(item)
     local label = exports['qs-core']:GetItemLabel(item)
     return label
@@ -280,24 +281,26 @@ function ESX.GetUsableItems()
 	return Usables
 end
 
-function ESX.CreatePickup(type, name, count, label, playerId, components, tintIndex)
-	local pickupId = (Core.PickupId == 65635 and 0 or Core.PickupId + 1)
-	local xPlayer = ESX.GetPlayerFromId(playerId)
-	local coords = xPlayer.getCoords()
+if not Config.OxInventory then
+	function ESX.CreatePickup(type, name, count, label, playerId, components, tintIndex)
+		local pickupId = (Core.PickupId == 65635 and 0 or Core.PickupId + 1)
+		local xPlayer = ESX.GetPlayerFromId(playerId)
+		local coords = xPlayer.getCoords()
 
-	Core.Pickups[pickupId] = {
-		type = type, name = name,
-		count = count, label = label,
-		coords = coords
-	}
+		Core.Pickups[pickupId] = {
+			type = type, name = name,
+			count = count, label = label,
+			coords = coords
+		}
 
-	if type == 'item_weapon' then
-		Core.Pickups[pickupId].components = components
-		Core.Pickups[pickupId].tintIndex = tintIndex
+		if type == 'item_weapon' then
+			Core.Pickups[pickupId].components = components
+			Core.Pickups[pickupId].tintIndex = tintIndex
+		end
+
+		TriggerClientEvent('esx:createPickup', -1, pickupId, label, coords, type, name, components, tintIndex)
+		Core.PickupId = pickupId
 	end
-
-	TriggerClientEvent('esx:createPickup', -1, pickupId, label, coords, type, name, components, tintIndex)
-	Core.PickupId = pickupId
 end
 
 function ESX.DoesJobExist(job, grade)
@@ -318,6 +321,7 @@ function Core.IsPlayerAdmin(playerId)
 	end
 
 	local xPlayer = ESX.GetPlayerFromId(playerId)
+
 	if xPlayer then
 		if xPlayer.group == 'admin' then
 			return true

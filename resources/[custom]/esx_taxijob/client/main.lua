@@ -232,7 +232,10 @@ function OpenTaxiActionsMenu()
 		elements = elements
 	}, function(data, menu)
 
-		if data.current.value == 'put_stock' then
+		if Config.OxInventory and (data.current.value == 'put_stock' or data.current.value == 'get_stock') then
+			exports.ox_inventory:openInventory('stash', 'society_taxi')
+			return ESX.UI.Menu.CloseAll()
+		elseif data.current.value == 'put_stock' then
 			OpenPutStocksMenu()
 		elseif data.current.value == 'get_stock' then
 			OpenGetStocksMenu()
@@ -500,7 +503,8 @@ CreateThread(function()
 			local isInMarker, letSleep, currentZone = false, true
 
 			for k,v in pairs(Config.Zones) do
-				local distance = #(coords - v.Pos)
+				local zonePos = vector3(v.Pos.x, v.Pos.y, v.Pos.z)
+				local distance = #(coords - zonePos)
 
 				if v.Type ~= -1 and distance < Config.DrawDistance then
 					letSleep = false
