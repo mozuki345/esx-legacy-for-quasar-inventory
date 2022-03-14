@@ -25,7 +25,8 @@ What changed from the latest release (legacy 1.5 version) ?
 - Oxmysql is now updated to v2.1.1 (no need think about it when installing Quasar-smartphone.)
 
 --> Some commands were edited/removed :
-- giveweapon ammo arg was removed of the command, inventory doesn't support it. (now : /giveweapon 'id' 'weaponname')
+- giveweapon ammo arg was removed of the command, inventory doesn't support it. 
+(now : /giveweapon 'id' 'weaponname')
 - /group and /job were removed too, /info does the same thing and also prints the player name so it's useless.
 
 --> Casino and Bob74 IPL :
@@ -38,6 +39,7 @@ What changed from the latest release (legacy 1.5 version) ?
 That's all ! basically nothing more than my last esx-legacy release for Quasar Inventory.
 This free edit is nothing than a little nudge to help you to launch your first server with the inventory.
 As mentioned before I'm not selling anything ! At the beginning, I only wanted to share my personal base because I received a few messages on discord of people having troubles with the installation of 1.5 esx-legacy and I wanted to help them by sharing my files.
+
 Now legacy 1.6 was released, I uptaded my little work. Hope you enjoy it !
 
 If you want to know more about the esx framework on fivem, this is their github :
