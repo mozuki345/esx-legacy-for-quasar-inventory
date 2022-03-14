@@ -27,6 +27,7 @@ What changed from the latest release (MY esx-legacy 1.5 version) ?
 --> Some commands were edited/removed :
 - giveweapon ammo arg was removed of the command, inventory doesn't support it. (now : /giveweapon 'id' 'weaponname')
 - /group and /job were removed too, /info does the same thing and also prints the player name so it's useless.
+- /clearinventory command from es_extended was removed, Quasar Inventory has it own.
 
 --> Casino and Bob74 IPL :
 - Now you can enter in the casino, and some other native mapping.
