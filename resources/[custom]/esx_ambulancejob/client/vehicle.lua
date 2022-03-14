@@ -280,14 +280,14 @@ end
 
 CreateThread(function()
 	while true do
-		sleep = 1500
+		Wait(0)
 
 		if isInShopMenu then
-			sleep = 0
 			DisableControlAction(0, 75, true)  -- Disable exit vehicle
 			DisableControlAction(27, 75, true) -- Disable exit vehicle
+		else
+			Wait(500)
 		end
-		Wait(sleep)
 	end
 end)
 

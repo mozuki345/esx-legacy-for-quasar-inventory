@@ -45,14 +45,15 @@ end)
 -- Activate menu when player is inside marker
 CreateThread(function()
 	while true do
+		Wait(0)
 		local coords = GetEntityCoords(PlayerPedId())
-		local Sleep = 1500
+		local canSleep = true
 		isInATMMarker = false
 
 		for k,v in pairs(Config.ATMLocations) do
 			local Pos = vector3(v.x,v.y,v.z)
-			if #(coords - Pos) < 2.0 then
-				Sleep = 0
+			if #(coords - Pos) < 1.0 then
+
 				isInATMMarker, canSleep = true, false
 				break
 			end
@@ -73,17 +74,20 @@ CreateThread(function()
 				hideAll = true
 			})
 		end
-	Wait(Sleep)
+
+		if canSleep then
+			Wait(500)
+		end
 	end
 end)
 
 -- Menu interactions
 CreateThread(function()
 	while true do
-		local Sleep = 1500
+		Wait(0)
 
 		if isInATMMarker and not menuIsShowed then
-			Sleep = 0
+
 			ESX.ShowHelpNotification(_U('press_e_atm'))
 
 			if IsControlJustReleased(0, 38) and IsPedOnFoot(PlayerPedId()) then
@@ -100,8 +104,10 @@ CreateThread(function()
 
 				SetNuiFocus(true, true)
 			end
+
+		else
+			Wait(700)
 		end
-	Wait(Sleep)
 	end
 end)
 

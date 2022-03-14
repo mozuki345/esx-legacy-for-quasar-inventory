@@ -6,7 +6,7 @@ isInShopMenu = false
 function OpenAmbulanceActionsMenu()
 	local elements = {{label = _U('cloakroom'), value = 'cloakroom'}}
 
-	if Config.EnablePlayerManagement and ESX.GetPlayerData().job.grade_name == 'boss' then
+	if Config.EnablePlayerManagement and ESX.PlayerData.job.grade_name == 'boss' then
 		table.insert(elements, {label = _U('boss_actions'), value = 'boss_actions'})
 	end
 
@@ -182,11 +182,11 @@ end
 -- Draw markers & Marker logic
 CreateThread(function()
 	while true do
-		local sleep = 1500
+		Wait(0)
 
-		if ESX.GetPlayerData().job and ESX.GetPlayerData().job.name == 'ambulance' then
+		if ESX.PlayerData.job and ESX.PlayerData.job.name == 'ambulance' then
 			local playerCoords = GetEntityCoords(PlayerPedId())
-			local isInMarker, hasExited = false, false
+			local letSleep, isInMarker, hasExited = true, false, false
 			local currentHospital, currentPart, currentPartNum
 
 			for hospitalNum,hospital in pairs(Config.Hospitals) do
@@ -195,9 +195,8 @@ CreateThread(function()
 					local distance = #(playerCoords - v)
 
 					if distance < Config.DrawDistance then
-						sleep = 0
 						DrawMarker(Config.Marker.type, v, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.Marker.x, Config.Marker.y, Config.Marker.z, Config.Marker.r, Config.Marker.g, Config.Marker.b, Config.Marker.a, false, false, 2, Config.Marker.rotate, nil, nil, false)
-						
+						letSleep = false
 
 						if distance < Config.Marker.x then
 							isInMarker, currentHospital, currentPart, currentPartNum = true, hospitalNum, 'AmbulanceActions', k
@@ -210,9 +209,8 @@ CreateThread(function()
 					local distance = #(playerCoords - v)
 
 					if distance < Config.DrawDistance then
-						sleep = 0
 						DrawMarker(Config.Marker.type, v, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.Marker.x, Config.Marker.y, Config.Marker.z, Config.Marker.r, Config.Marker.g, Config.Marker.b, Config.Marker.a, false, false, 2, Config.Marker.rotate, nil, nil, false)
-						
+						letSleep = false
 
 						if distance < Config.Marker.x then
 							isInMarker, currentHospital, currentPart, currentPartNum = true, hospitalNum, 'Pharmacy', k
@@ -225,9 +223,8 @@ CreateThread(function()
 					local distance = #(playerCoords - v.Spawner)
 
 					if distance < Config.DrawDistance then
-						sleep = 0
 						DrawMarker(v.Marker.type, v.Spawner, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, v.Marker.x, v.Marker.y, v.Marker.z, v.Marker.r, v.Marker.g, v.Marker.b, v.Marker.a, false, false, 2, v.Marker.rotate, nil, nil, false)
-						
+						letSleep = false
 
 						if distance < v.Marker.x then
 							isInMarker, currentHospital, currentPart, currentPartNum = true, hospitalNum, 'Vehicles', k
@@ -240,9 +237,8 @@ CreateThread(function()
 					local distance = #(playerCoords - v.Spawner)
 
 					if distance < Config.DrawDistance then
-						sleep = 0
 						DrawMarker(v.Marker.type, v.Spawner, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, v.Marker.x, v.Marker.y, v.Marker.z, v.Marker.r, v.Marker.g, v.Marker.b, v.Marker.a, false, false, 2, v.Marker.rotate, nil, nil, false)
-						
+						letSleep = false
 
 						if distance < v.Marker.x then
 							isInMarker, currentHospital, currentPart, currentPartNum = true, hospitalNum, 'Helicopters', k
@@ -255,9 +251,8 @@ CreateThread(function()
 					local distance = #(playerCoords - v.From)
 
 					if distance < Config.DrawDistance then
-						sleep = 0
 						DrawMarker(v.Marker.type, v.From, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, v.Marker.x, v.Marker.y, v.Marker.z, v.Marker.r, v.Marker.g, v.Marker.b, v.Marker.a, false, false, 2, v.Marker.rotate, nil, nil, false)
-						
+						letSleep = false
 
 						if distance < v.Marker.x then
 							isInMarker, currentHospital, currentPart, currentPartNum = true, hospitalNum, 'FastTravelsPrompt', k
@@ -285,8 +280,41 @@ CreateThread(function()
 				HasAlreadyEnteredMarker = false
 				TriggerEvent('esx_ambulancejob:hasExitedMarker', LastHospital, LastPart, LastPartNum)
 			end
+
+			if letSleep then
+				Wait(500)
+			end
+		else
+			Wait(500)
 		end
-		Wait(sleep)
+	end
+end)
+
+-- Fast travels
+CreateThread(function()
+	while true do
+		Wait(0)
+		local playerCoords, letSleep = GetEntityCoords(PlayerPedId()), true
+
+		for hospitalNum,hospital in pairs(Config.Hospitals) do
+			-- Fast Travels
+			for k,v in ipairs(hospital.FastTravels) do
+				local distance = #(playerCoords - v.From)
+
+				if distance < Config.DrawDistance then
+					DrawMarker(v.Marker.type, v.From, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, v.Marker.x, v.Marker.y, v.Marker.z, v.Marker.r, v.Marker.g, v.Marker.b, v.Marker.a, false, false, 2, v.Marker.rotate, nil, nil, false)
+					letSleep = false
+
+					if distance < v.Marker.x then
+						FastTravel(v.To.coords, v.To.heading)
+					end
+				end
+			end
+		end
+
+		if letSleep then
+			Wait(500)
+		end
 	end
 end)
 
@@ -327,10 +355,9 @@ end)
 -- Key Controls
 CreateThread(function()
 	while true do
-		local sleep = 1500
+		Wait(0)
 
 		if CurrentAction then
-			sleep = 0
 			ESX.ShowHelpNotification(CurrentActionMsg)
 
 			if IsControlJustReleased(0, 38) then
@@ -348,37 +375,16 @@ CreateThread(function()
 
 				CurrentAction = nil
 			end
-		end
 
-		local playerCoords, letSleep = GetEntityCoords(PlayerPedId()), true
-
-		for hospitalNum,hospital in pairs(Config.Hospitals) do
-			-- Fast Travels
-			for k,v in ipairs(hospital.FastTravels) do
-				local distance = #(playerCoords - v.From)
-
-				if distance < Config.DrawDistance then
-					sleep = 0
-					DrawMarker(v.Marker.type, v.From, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, v.Marker.x, v.Marker.y, v.Marker.z, v.Marker.r, v.Marker.g, v.Marker.b, v.Marker.a, false, false, 2, v.Marker.rotate, nil, nil, false)
-					
-
-					if distance < v.Marker.x then
-						FastTravel(v.To.coords, v.To.heading)
-					end
-				end
+		elseif ESX.PlayerData.job and ESX.PlayerData.job.name == 'ambulance' and not ESX.PlayerData.dead then
+			if IsControlJustReleased(0, 167) then
+				OpenMobileAmbulanceActionsMenu()
 			end
+		else
+			Wait(500)
 		end
-		Wait(sleep)
 	end
 end)
-
-RegisterCommand("ambulance", function(src)
-	if ESX.GetPlayerData().job and ESX.GetPlayerData().job.name == 'ambulance' and not ESX.GetPlayerData().dead then 
-		OpenMobileAmbulanceActionsMenu()
-	end
-end)
-
-RegisterKeyMapping("ambulance", "Open Ambulance Actions Menu", "keyboard", "k")
 
 RegisterNetEvent('esx_ambulancejob:putInVehicle')
 AddEventHandler('esx_ambulancejob:putInVehicle', function()

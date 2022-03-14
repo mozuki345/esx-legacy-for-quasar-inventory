@@ -11,8 +11,6 @@ Config.EnableSocietyOwnedVehicles = false
 
 Config.Locale                     = 'en'
 
-Config.OxInventory                = ESX.GetConfig().OxInventory
-
 Config.AuthorizedVehicles = {
 	{model = 'taxi', label = 'Taxi'}
 }

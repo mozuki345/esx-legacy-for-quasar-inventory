@@ -91,7 +91,7 @@ CREATE TABLE `addon_inventory_items` (
 CREATE TABLE `billing` (
   `id` int(11) NOT NULL,
   `identifier` varchar(60) NOT NULL,
-  `sender` varchar(60) NOT NULL,
+  `sender` varchar(40) NOT NULL,
   `target_type` varchar(50) NOT NULL,
   `target` varchar(40) NOT NULL,
   `label` varchar(255) NOT NULL,
@@ -133,13 +133,6 @@ INSERT INTO `datastore` (`name`, `label`, `shared`) VALUES
 ('society_police', 'Police', 1),
 ('society_taxi', 'Taxi', 1);
 
-
-INSERT INTO `datastore` (`name`, `label`, `shared`) VALUES
-    ('user_ears', 'Ears', 0),
-    ('user_glasses', 'Glasses', 0),
-    ('user_helmet', 'Helmet', 0),
-    ('user_mask', 'Mask', 0);
-    
 -- --------------------------------------------------------
 
 --
@@ -1219,25 +1212,3 @@ INSERT INTO `fine_types` (label, amount, category) VALUES
 	('Murder of an LEO', 30000, 3),
 	('Involuntary manslaughter', 1800, 3),
 	('Fraud', 2000, 2);
-
-
---
--- ESX Bankerjob
---
-
-INSERT INTO `addon_account` (name, label, shared) VALUES
-	('society_banker','Banque',1),
-	('bank_savings','Livret Bleu',0)
-;
-
-INSERT INTO `jobs` (name, label) VALUES
-	('banker','Banquier')
-;
-
-INSERT INTO `job_grades` (job_name, grade, name, label, salary, skin_male, skin_female) VALUES
-	('banker',0,'advisor','Conseiller',10,'{}','{}'),
-	('banker',1,'banker','Banquier',20,'{}','{}'),
-	('banker',2,'business_banker',"Banquier d\'affaire",30,'{}','{}'),
-	('banker',3,'trader','Trader',40,'{}','{}'),
-	('banker',4,'boss','Patron',0,'{}','{}')
-;

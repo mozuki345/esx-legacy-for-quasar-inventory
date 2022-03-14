@@ -326,9 +326,7 @@ function OpenResellerMenu()
 	}}, function(data, menu)
 		local action = data.current.value
 
-		if Config.OxInventory and (action == 'put_stock' or action == 'get_stock') then
-			exports.ox_inventory:openInventory('stash', 'society_cardealer')
-		elseif action == 'buy_vehicle' then
+		if action == 'buy_vehicle' then
 			OpenShopMenu()
 		elseif action == 'put_stock' then
 			OpenPutStocksMenu()

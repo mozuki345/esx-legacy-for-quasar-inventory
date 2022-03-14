@@ -65,7 +65,7 @@ function OpenMenu(submitCb, cancelCb, restrict)
 
         ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'skin', {
             title = _U('skin_menu'),
-            align = 'bottom-left',
+            align = 'top-left',
             elements = elements
         }, function(data, menu)
             TriggerEvent('skinchanger:getSkin', function(skin) lastSkin = skin end)
@@ -143,10 +143,9 @@ end
 
 CreateThread(function()
     while true do
-        local sleep = 1500
+        Wait(0)
 
         if isCameraActive then
-            sleep = 0
             DisableControlAction(2, 30, true)
             DisableControlAction(2, 31, true)
             DisableControlAction(2, 32, true)
@@ -192,8 +191,9 @@ CreateThread(function()
             PointCamAtCoord(cam, posToLook.x, posToLook.y, coords.z + camOffset)
 
             ESX.ShowHelpNotification(_U('use_rotate_view'))
+        else
+            Wait(700)
         end
-        Wait(sleep)
     end
 end)
 
@@ -201,13 +201,12 @@ CreateThread(function()
     local angle = 90
 
     while true do
-        local sleep = 1500
+        Wait(0)
 
         if isCameraActive then
-            sleep = 0
-            if IsControlPressed(0, 209) then
+            if IsControlPressed(0, 108) then
                 angle = angle - 1
-            elseif IsControlPressed(0, 19) then
+            elseif IsControlPressed(0, 109) then
                 angle = angle + 1
             end
 
@@ -218,8 +217,9 @@ CreateThread(function()
             end
 
             heading = angle + 0.0
+        else
+            Wait(500)
         end
-    Wait(sleep)
     end
 end)
 

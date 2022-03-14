@@ -2,14 +2,15 @@ CreateThread(function()
 	local isDead = false
 
 	while true do
-		local sleep = 1500
+		Wait(0)
+		local letSleep = 0
 		local player = PlayerId()
 
 		if NetworkIsPlayerActive(player) then
 			local playerPed = PlayerPedId()
 
 			if IsPedFatallyInjured(playerPed) and not isDead then
-				sleep = 0
+				letSleep = false
 				isDead = true
 
 				local killerEntity, deathCause = GetPedSourceOfDeath(playerPed), GetPedCauseOfDeath(playerPed)
@@ -22,11 +23,13 @@ CreateThread(function()
 				end
 
 			elseif not IsPedFatallyInjured(playerPed) and isDead then
-				sleep = 0
+				letSleep = false
 				isDead = false
 			end
 		end
-	Wait(sleep)
+		if letSleep then
+			Wait(500)
+		end
 	end
 end)
 

@@ -2,6 +2,12 @@ local HasAlreadyEnteredMarker = false
 local LastZone, CurrentAction, CurrentActionMsg
 local CurrentActionData	= {}
 
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+	ESX.PlayerData = xPlayer
+	ESX.PlayerLoaded = true
+end)
+
 function OpenAccessoryMenu()
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'set_unset_accessory', {
 		title = _U('set_unset'),
@@ -74,19 +80,9 @@ function OpenShopMenu(accessory)
 							TriggerServerEvent('esx_accessories:save', skin, accessory)
 						end)
 					else
-						local player = PlayerPedId()
 						TriggerEvent('esx_skin:getLastSkin', function(skin)
 							TriggerEvent('skinchanger:loadSkin', skin)
 						end)
-						if accessory == "Ears" then
-							ClearPedProp(player, 2)
-						elseif accessory == "Mask" then
-							SetPedComponentVariation(player, 1, 0 ,0, 2)
-						elseif accessory == "Helmet" then
-							ClearPedProp(player, 0)
-						elseif accessory == "Glasses" then
-							SetPedPropIndex(player, 1, -1, 0, 0)
-						end
 						ESX.ShowNotification(_U('not_enough_money'))
 					end
 				end)
@@ -160,12 +156,12 @@ local nearMarker = false
 -- Display markers
 CreateThread(function()
 	while true do
-		local sleep = 1500
-		local coords = GetEntityCoords(PlayerPedId())
+		local sleep = 500
+		local coords = GetEntityCoords(ESX.PlayerData.ped)
 		for k,v in pairs(Config.Zones) do
 			for i = 1, #v.Pos, 1 do
 				if(Config.Type ~= -1 and #(coords - v.Pos[i]) < Config.DrawDistance) then
-					DrawMarker(Config.Type, v.Pos[i], 0.0, 0.0, 0.0, 0, 0.0, 0.0, Config.Size.x, Config.Size.y, Config.Size.z, Config.Color.r, Config.Color.g, Config.Color.b, 255, true, false, 2, true, false, false, false)
+					DrawMarker(Config.Type, v.Pos[i], 0.0, 0.0, 0.0, 0, 0.0, 0.0, Config.Size.x, Config.Size.y, Config.Size.z, Config.Color.r, Config.Color.g, Config.Color.b, 100, false, true, 2, false, false, false, false)
 					sleep = 0
 					break
 				end
@@ -178,10 +174,10 @@ end)
 
 CreateThread(function()
 	while true do
-		local sleep = 1500
+		local sleep = 500
 		if nearMarker then
-			sleep = 0
-			local coords = GetEntityCoords(PlayerPedId())
+			sleep = 200
+			local coords = GetEntityCoords(ESX.PlayerData.ped)
 			local isInMarker = false
 			local currentZone = nil
 			for k,v in pairs(Config.Zones) do
@@ -212,27 +208,23 @@ end)
 -- Key controls
 CreateThread(function()
 	while true do
-		local Sleep = 1500
+		Wait(0)
 		
 		if CurrentAction then
-			Sleep = 0
 			ESX.ShowHelpNotification(CurrentActionMsg)
 
 			if IsControlJustReleased(0, 38) and CurrentActionData.accessory then
 				OpenShopMenu(CurrentActionData.accessory)
 				CurrentAction = nil
 			end
+		elseif CurrentAction and not Config.EnableControls then
+			Wait(500)
 		end
-		Wait(Sleep)
+
+		if Config.EnableControls then
+			if IsControlJustReleased(0, 311) and IsUsingKeyboard(0) and not ESX.PlayerData.dead then
+				OpenAccessoryMenu()
+			end
+		end
 	end
 end)
-
-if Config.EnableControls then
-	RegisterCommand("accessory", function(src)
-		if not ESX.GetPlayerData().dead then 
-			OpenAccessoryMenu()
-		end
-	end)
-
-	RegisterKeyMapping("accessory", "Open Accessory Menu", "keyboard", "k")
-end

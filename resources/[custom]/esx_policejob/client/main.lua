@@ -204,21 +204,15 @@ function OpenCloakroomMenu()
 end
 
 function OpenArmoryMenu(station)
-	local elements
-	if Config.OxInventory then
-		exports.ox_inventory:openInventory('stash', {id = 'society_police', owner = station})
-		return ESX.UI.Menu.CloseAll()
-	else
-		elements = {
-			{label = _U('buy_weapons'), value = 'buy_weapons'}
-		}
+	local elements = {
+		{label = _U('buy_weapons'), value = 'buy_weapons'}
+	}
 
-		if Config.EnableArmoryManagement then
-			table.insert(elements, {label = _U('get_weapon'),     value = 'get_weapon'})
-			table.insert(elements, {label = _U('put_weapon'),     value = 'put_weapon'})
-			table.insert(elements, {label = _U('remove_object'),  value = 'get_stock'})
-			table.insert(elements, {label = _U('deposit_object'), value = 'put_stock'})
-		end
+	if Config.EnableArmoryManagement then
+		table.insert(elements, {label = _U('get_weapon'),     value = 'get_weapon'})
+		table.insert(elements, {label = _U('put_weapon'),     value = 'put_weapon'})
+		table.insert(elements, {label = _U('remove_object'),  value = 'get_stock'})
+		table.insert(elements, {label = _U('deposit_object'), value = 'put_stock'})
 	end
 
 	ESX.UI.Menu.CloseAll()
@@ -451,7 +445,7 @@ function OpenIdentityCardMenu(player)
 	end, GetPlayerServerId(player))
 end
 
--- Edit for Quasar Inventory
+-- Here's another modification for Quasar Inventory
 function OpenBodySearchMenu(player)
     TriggerServerEvent("inventory:server:OpenInventory", "otherplayer", GetPlayerServerId(player)) --Important.
 end
@@ -1119,10 +1113,10 @@ CreateThread(function()
 			DisableControlAction(0, 257, true) -- Attack 2
 			DisableControlAction(0, 25, true) -- Aim
 			DisableControlAction(0, 263, true) -- Melee Attack 1
-			DisableControlAction(0, 32, true) -- W
-			DisableControlAction(0, 34, true) -- A
-			DisableControlAction(0, 31, true) -- S
-			DisableControlAction(0, 30, true) -- D
+			--DisableControlAction(0, 32, true) -- W
+			--DisableControlAction(0, 34, true) -- A
+			--DisableControlAction(0, 31, true) -- S
+			--DisableControlAction(0, 30, true) -- D
 
 			DisableControlAction(0, 45, true) -- Reload
 			DisableControlAction(0, 22, true) -- Jump
@@ -1131,7 +1125,7 @@ CreateThread(function()
 			DisableControlAction(0, 23, true) -- Also 'enter'?
 
 			DisableControlAction(0, 288,  true) -- Disable phone
-			DisableControlAction(0, 289, true) -- Inventory
+			--DisableControlAction(0, 289, true) -- Inventory
 			DisableControlAction(0, 170, true) -- Animations
 			DisableControlAction(0, 167, true) -- Job
 

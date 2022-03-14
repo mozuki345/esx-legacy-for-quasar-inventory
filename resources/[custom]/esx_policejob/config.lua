@@ -22,8 +22,6 @@ Config.MaxInService               = -1 -- How many people can be in service at o
 
 Config.Locale                     = 'en'
 
-Config.OxInventory                = ESX.GetConfig().OxInventory
-
 Config.PoliceStations = {
 
 	LSPD = {

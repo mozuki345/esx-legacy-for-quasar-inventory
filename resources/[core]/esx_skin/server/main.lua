@@ -1,16 +1,13 @@
 RegisterServerEvent('esx_skin:save')
 AddEventHandler('esx_skin:save', function(skin)
 	local xPlayer = ESX.GetPlayerFromId(source)
+	local defaultMaxWeight = ESX.GetConfig().MaxWeight
+	local backpackModifier = Config.BackpackWeight[skin.bags_1]
 
-	if not ESX.GetConfig().OxInventory then
-		local defaultMaxWeight = ESX.GetConfig().MaxWeight
-		local backpackModifier = Config.BackpackWeight[skin.bags_1]
-
-		if backpackModifier then
-			xPlayer.setMaxWeight(defaultMaxWeight + backpackModifier)
-		else
-			xPlayer.setMaxWeight(defaultMaxWeight)
-		end
+	if backpackModifier then
+		xPlayer.setMaxWeight(defaultMaxWeight + backpackModifier)
+	else
+		xPlayer.setMaxWeight(defaultMaxWeight)
 	end
 
 	MySQL.update('UPDATE users SET skin = @skin WHERE identifier = @identifier', {

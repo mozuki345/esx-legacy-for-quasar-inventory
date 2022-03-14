@@ -1,14 +1,17 @@
+local Player = nil
 local CruisedSpeed, CruisedSpeedKm, VehicleVectorY = 0, 0, 0
 
-RegisterCommand("cruise", function(src)
-	if IsDriver() then 
-		TriggerCruiseControl()
+CreateThread(function ()
+	while true do
+		Wait(0)
+		if IsControlJustPressed(1, 246) and IsDriver() then
+			Player = PlayerPedId()
+			TriggerCruiseControl()
+		end
 	end
 end)
 
-RegisterKeyMapping("cruise", "Enable Cruise Control", "keyboard",Config.ToggleKey)
-
-function TriggerCruiseControl()
+function TriggerCruiseControl ()
 	if CruisedSpeed == 0 and IsDriving() then
 		if GetVehicleSpeed() > 0 and GetVehicleCurrentGear(GetVehicle()) > 0	then
 			CruisedSpeed = GetVehicleSpeed()
@@ -17,7 +20,7 @@ function TriggerCruiseControl()
 			ESX.ShowNotification(_U('activated') .. ': ~b~ ' .. CruisedSpeedKm .. ' km/h')
 
 			CreateThread(function ()
-				while CruisedSpeed > 0 and IsInVehicle() == PlayerPedId() do
+				while CruisedSpeed > 0 and IsInVehicle() == Player do
 					Wait(0)
 
 					if not IsTurningOrHandBraking() and GetVehicleSpeed() < (CruisedSpeed - 1.5) then
@@ -53,11 +56,11 @@ function IsTurningOrHandBraking ()
 end
 
 function IsDriving ()
-	return IsPedInAnyVehicle(PlayerPedId(), false)
+	return IsPedInAnyVehicle(Player, false)
 end
 
 function GetVehicle ()
-	return GetVehiclePedIsIn(PlayerPedId(), false)
+	return GetVehiclePedIsIn(Player, false)
 end
 
 function IsInVehicle ()
@@ -65,7 +68,7 @@ function IsInVehicle ()
 end
 
 function IsDriver ()
-	return GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1)
+	return GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) == PlayerPedId()
 end
 
 function GetVehicleSpeed ()

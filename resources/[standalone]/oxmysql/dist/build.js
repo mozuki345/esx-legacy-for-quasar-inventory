@@ -21692,20 +21692,16 @@ var scheduleTick = async () => {
 // src/database/rawQuery.ts
 var rawQuery = async (type, invokingResource, query, parameters, cb) => {
   await scheduleTick();
-  let response;
   try {
     [query, parameters, cb] = parseArguments(invokingResource, query, parameters, cb);
     const [result, _, executionTime] = await pool.query(query, parameters);
     logQuery(invokingResource, query, executionTime, parameters);
-    response = parseResponse(type, result);
+    const response = parseResponse(type, result);
+    return cb ? cb(response) : response;
   } catch (e2) {
     throw new Error(`${invokingResource} was unable to execute a query!
 ${e2.message}
 ${e2.sql || `${query} ${JSON.stringify(parameters)}`}`);
-  }
-  try {
-    return cb ? cb(response) : response;
-  } catch {
   }
 };
 
@@ -21734,7 +21730,6 @@ var rawTransaction = async (invokingResource, queries, parameters, callback) => 
   await scheduleTick();
   const { transactions, cb } = parseTransaction(invokingResource, queries, parameters, callback);
   const connection = await pool.getConnection();
-  let response = false;
   try {
     const executionTime = process.hrtime();
     await connection.beginTransaction();
@@ -21742,18 +21737,15 @@ var rawTransaction = async (invokingResource, queries, parameters, callback) => 
       await connection.query(transaction.query, transaction.params);
     await connection.commit();
     logQuery(invokingResource, "TRANSACTION", process.hrtime(executionTime)[1] / 1e6, parameters);
-    response = true;
+    return cb ? cb(true) : true;
   } catch (e2) {
     await connection.rollback();
     console.error(`${invokingResource} was unable to execute a transaction!
 ${e2.message}
 ${e2.sql || `${transactionError(transactions, parameters)}`}^0`);
+    return cb ? cb(false) : false;
   } finally {
     connection.release();
-  }
-  try {
-    return cb ? cb(response) : response;
-  } catch {
   }
 };
 
@@ -21782,7 +21774,7 @@ var rawExecute = async (invokingResource, query, parameters, cb) => {
     throw new Error(`Parameters expected an array but received ${typeof parameters} instead`);
   await scheduleTick();
   const connection = await pool.getConnection();
-  let response;
+  let result;
   try {
     if (!parameters.every(Array.isArray))
       parameters = [[...parameters]];
@@ -21798,19 +21790,21 @@ var rawExecute = async (invokingResource, query, parameters, cb) => {
         results.push(parseResponse(type, rows));
       logQuery(invokingResource, query, process.hrtime(executionTime)[1] / 1e6, params);
     }
-    response = results;
+    result = results;
     if (results.length === 1) {
       if (type === "execute") {
         if (results[0][0] && Object.keys(results[0][0]).length === 1)
-          response = Object.values(results[0][0])[0];
+          result = Object.values(results[0][0])[0];
         else
-          response = results[0][0];
+          result = results[0][0];
       } else {
-        response = results[0];
+        result = results[0];
       }
     } else {
-      response = results;
+      result = results;
     }
+    if (!cb)
+      return result;
   } catch (e2) {
     throw new Error(`${invokingResource} was unable to execute a query!
     ${e2.message}
@@ -21818,10 +21812,8 @@ var rawExecute = async (invokingResource, query, parameters, cb) => {
   } finally {
     connection.release();
   }
-  try {
-    return cb ? cb(response) : response;
-  } catch {
-  }
+  if (cb)
+    cb(result);
 };
 
 // src/index.ts

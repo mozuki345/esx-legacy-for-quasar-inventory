@@ -145,7 +145,7 @@ function ESX.UI.HUD.RegisterElement(name, index, priority, html, data)
 		return
 	end
 
-	ESX.UI.HUD.RegisteredElements[#ESX.UI.HUD.RegisteredElements + 1] = name
+	table.insert(ESX.UI.HUD.RegisteredElements, name)
 
 	SendNUIMessage({
 		action    = 'insertHUDElement',
@@ -274,7 +274,7 @@ function ESX.UI.Menu.Open(type, namespace, name, data, submit, cancel, change, c
 		end
 	end
 
-	ESX.UI.Menu.Opened[#ESX.UI.Menu.Opened + 1] = menu
+	table.insert(ESX.UI.Menu.Opened, menu)
 	ESX.UI.Menu.RegisteredTypes[type].open(namespace, name, data)
 
 	return menu
@@ -444,7 +444,7 @@ function ESX.Game.GetPeds(onlyOtherPeds)
 
 	for i=1, #pool do
         if ((onlyOtherPeds and pool[i] ~= myPed) or not onlyOtherPeds) then
-			peds[#peds + 1] = pool[i]
+            table.insert(peds, pool[i])
         end
     end
 
@@ -465,7 +465,7 @@ function ESX.Game.GetPlayers(onlyOtherPlayers, returnKeyValue, returnPeds)
 			if returnKeyValue then
 				players[player] = ped
 			else
-				players[#players + 1] = returnPeds and ped or player
+				table.insert(players, returnPeds and ped or player)
 			end
 		end
 	end
@@ -503,7 +503,7 @@ local function EnumerateEntitiesWithinDistance(entities, isPlayerEntities, coord
 		local distance = #(coords - GetEntityCoords(entity))
 
 		if distance <= maxDistance then
-			nearbyEntities[#nearbyEntities + 1] = isPlayerEntities and k or entity
+			table.insert(nearbyEntities, isPlayerEntities and k or entity)
 		end
 	end
 
@@ -538,7 +538,7 @@ function ESX.Game.GetClosestEntity(entities, isPlayerEntities, coords, modelFilt
 
 		for k,entity in pairs(entities) do
 			if modelFilter[GetEntityModel(entity)] then
-				filteredEntities[#filteredEntities + 1] = entity
+				table.insert(filteredEntities, entity)
 			end
 		end
 	end
