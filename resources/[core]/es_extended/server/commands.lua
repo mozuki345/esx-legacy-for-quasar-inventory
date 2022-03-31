@@ -1,5 +1,4 @@
--- I changed 'setcoords' by 'tp', it's faster use and understand
-ESX.RegisterCommand('tp', 'admin', function(xPlayer, args, showError)
+ESX.RegisterCommand('setcoords', 'admin', function(xPlayer, args, showError)
 	xPlayer.setCoords({x = args.x, y = args.y, z = args.z})
 end, false, {help = _U('command_setcoords'), validate = true, arguments = {
 	{name = 'x', help = _U('command_setcoords_x'), type = 'number'},
@@ -57,51 +56,19 @@ end, true, {help = _U('command_giveaccountmoney'), validate = true, arguments = 
 	{name = 'amount', help = _U('command_giveaccountmoney_amount'), type = 'number'}
 }})
 
+-- QS
 if not Config.OxInventory then
-	-- Edit for Quasar Inventory
-	--[[ESX.RegisterCommand('giveitem', 'admin', function(xPlayer, args, showError)
-		args.playerId.addInventoryItem(args.item, args.count)
-	end, true, {help = _U('command_giveitem'), validate = true, arguments = {
-		{name = 'playerId', help = _U('commandgeneric_playerid'), type = 'player'},
-		{name = 'item', help = _U('command_giveitem_item'), type = 'item'},
-		{name = 'count', help = _U('command_giveitem_count'), type = 'number'}
-	}}) ]]
-
-	-- Edit for Quasar Inventory
 	ESX.RegisterCommand('giveweapon', 'admin', function(xPlayer, args, showError)
 		if args.playerId.hasWeapon(args.weapon) then
 			showError(_U('command_giveweapon_hasalready'))
 		else
-			args.playerId.addWeapon(args.weapon) --args.ammo)
+			args.playerId.addWeapon(args.weapon, args.ammo)
 		end
 	end, true, {help = _U('command_giveweapon'), validate = true, arguments = {
 		{name = 'playerId', help = _U('commandgeneric_playerid'), type = 'player'},
-		{name = 'weapon', help = _U('command_giveweapon_weapon'), type = 'weapon'},
-		--{name = 'ammo', help = _U('command_giveweapon_ammo'), type = 'number'}
+		{name = 'weapon', help = _U('command_giveweapon_weapon'), type = 'weapon'}
+		--{name = 'ammo', help = _U('command_giveweapon_ammo'), type = 'number'} This was removed because ammo are now items
 	}})
-
-	-- Edit for Quasar Inventory
-	--[[ESX.RegisterCommand('giveweaponcomponent', 'admin', function(xPlayer, args, showError)
-		if args.playerId.hasWeapon(args.weaponName) then
-			local component = ESX.GetWeaponComponent(args.weaponName, args.componentName)
-
-			if component then
-				if args.playerId.hasWeaponComponent(args.weaponName, args.componentName) then
-					showError(_U('command_giveweaponcomponent_hasalready'))
-				else
-					args.playerId.addWeaponComponent(args.weaponName, args.componentName)
-				end
-			else
-				showError(_U('command_giveweaponcomponent_invalid'))
-			end
-		else
-			showError(_U('command_giveweaponcomponent_missingweapon'))
-		end
-	end, true, {help = _U('command_giveweaponcomponent'), validate = true, arguments = {
-		{name = 'playerId', help = _U('commandgeneric_playerid'), type = 'player'},
-		{name = 'weaponName', help = _U('command_giveweapon_weapon'), type = 'weapon'},
-		{name = 'componentName', help = _U('command_giveweaponcomponent_component'), type = 'string'}
-	}})]]
 end
 
 ESX.RegisterCommand('clear', 'user', function(xPlayer, args, showError)
@@ -112,18 +79,7 @@ ESX.RegisterCommand('clearall', 'admin', function(xPlayer, args, showError)
 	TriggerClientEvent('chat:clear', -1)
 end, false, {help = _U('command_clearall')})
 
--- Edit for Quasar Inventory
 if not Config.OxInventory then
-	--[[ESX.RegisterCommand('clearinventory', 'admin', function(xPlayer, args, showError)
-		for k,v in ipairs(args.playerId.inventory) do
-			if v.count > 0 then
-				args.playerId.setInventoryItem(v.name, 0)
-			end
-		end
-	end, true, {help = _U('command_clearinventory'), validate = true, arguments = {
-		{name = 'playerId', help = _U('commandgeneric_playerid'), type = 'player'}
-	}})]]
-
 	ESX.RegisterCommand('clearloadout', 'admin', function(xPlayer, args, showError)
 		for i=#args.playerId.loadout, 1, -1 do
 			args.playerId.removeWeapon(args.playerId.loadout[i].name)
@@ -152,15 +108,6 @@ end, true, {help = _U('command_save'), validate = true, arguments = {
 ESX.RegisterCommand('saveall', 'admin', function(xPlayer, args, showError)
 	Core.SavePlayers()
 end, true, {help = _U('command_saveall')})
-
--- This two were 'deleted', use /info instead (it's the same shit but with name in one message). 
---[[ESX.RegisterCommand('group', {"user", "admin"}, function(xPlayer, args, showError)
-	print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getGroup() .. "^0")
-end, true)
-
-ESX.RegisterCommand('job', {"user", "admin"}, function(xPlayer, args, showError)
-print(xPlayer.getName()..", You are currently: ^5".. xPlayer.getJob().name.. "^0 - ^5".. xPlayer.getJob().grade_label .. "^0")
-end, true)]]
 
 ESX.RegisterCommand('info', {"user", "admin"}, function(xPlayer, args, showError)
 	local job = xPlayer.getJob().name

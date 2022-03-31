@@ -208,7 +208,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	-- Edit for Quasar Inventory
+	-- QS
 	function self.addAccountMoney(accountName, money)
 		if money > 0 then
 			local money = ESX.Math.Round(money)
@@ -233,8 +233,8 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 			end
 		end
 	end
-	
-	-- Edit for Quasar Inventory
+
+	-- QS
 	function self.removeAccountMoney(accountName, money)
 		if money > 0 then
 			local money = ESX.Math.Round(money)
@@ -274,23 +274,22 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	-- Edit for Quasar Inventory
+	-- QS
 	function self.getInventoryItem(name)
 		local Item = exports['qs-core']:GetItem(self.source, name)
 		return Item
 	end
-
-	-- Edit for Quasar Inventory
+	-- QS
 	function self.addInventoryItem(name, count)
 		TriggerEvent('inventory:server:addItem', self.source, name, count)
 	end
-	
-	-- Edit for Quasar Inventory
+
+	-- QS
 	function self.removeInventoryItem(name, count)
 		TriggerEvent('inventory:server:removeItem', self.source, name, count)
 	end
 
-	-- Edit for Quasar Inventory
+	-- QS
 	function self.setInventoryItem(name, count)
 		return true
 	end
@@ -303,7 +302,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		return self.maxWeight
 	end
 
-	-- Edit for Quasar Inventory
+	-- QS
 	function self.canCarryItem(name, count)
 		local canCarry = exports['qs-core']:CanCarry(self.source, name, count)
 		if canCarry then 
@@ -375,7 +374,7 @@ function CreateExtendedPlayer(playerId, identifier, group, accounts, inventory, 
 		end
 	end
 
-	-- Edit for Quasar Inventory
+	-- QS
 	function self.addWeapon(weaponName)
 		TriggerEvent('inventory:server:addItem:weapon', self.source, weaponName, 1)
 	end

@@ -1,15 +1,5 @@
 local pickups = {}
 
--- Edit for Quasar Inventory
-RegisterNetEvent('qs-core:setPlayerData')
-AddEventHandler('qs-core:setPlayerData', function(data)
-    local Inventory = data.items
-    for _, slot in pairs(Inventory) do
-        Inventory[_].count = Inventory[_].amount
-    end
-    ESX.PlayerData.inventory = Inventory
-end)
-
 CreateThread(function()
 	while not Config.Multichar do
 		Wait(0)
@@ -21,6 +11,16 @@ CreateThread(function()
 			break
 		end
 	end
+end)
+
+-- QS
+RegisterNetEvent('qs-core:setPlayerData')
+AddEventHandler('qs-core:setPlayerData', function(data)
+    local Inventory = data.items
+    for _, slot in pairs(Inventory) do
+        Inventory[_].count = Inventory[_].amount
+    end
+    ESX.PlayerData.inventory = Inventory
 end)
 
 RegisterNetEvent('esx:playerLoaded')
@@ -399,36 +399,32 @@ end
 
 function StartServerSyncLoops()
 	if not Config.OxInventory then
-		-- keep track of ammo
-		CreateThread(function()
-			local currentWeapon = {timer=0}
-			while ESX.PlayerLoaded do
-				local sleep = 500
+			-- keep track of ammo
 
-				if currentWeapon.timer == sleep then
-					local ammoCount = GetAmmoInPedWeapon(ESX.PlayerData.ped, currentWeapon.hash)
-					TriggerServerEvent('esx:updateWeaponAmmo', currentWeapon.name, ammoCount)
-					currentWeapon.timer = 0
-				elseif currentWeapon.timer > sleep then
-					currentWeapon.timer = currentWeapon.timer - sleep
-				end
-
-				if IsPedArmed(ESX.PlayerData.ped, 4) then
-					sleep = 0
-					if IsPedShooting(ESX.PlayerData.ped) then
-						local _,weaponHash = GetCurrentPedWeapon(ESX.PlayerData.ped, true)
-						local weapon = ESX.GetWeaponFromHash(weaponHash)
-
-						if weapon then
-							currentWeapon.name = weapon.name
-							currentWeapon.hash = weaponHash
-							currentWeapon.timer = 100 * sleep
-						end
+			CreateThread(function()
+					local currentWeapon = {Ammo = 0}
+					while ESX.PlayerLoaded do
+						local sleep = 250
+						if IsPedArmed(ESX.PlayerData.ped, 4) or IsPedArmed(ESX.PlayerData.ped, 2) then
+							sleep = 0
+							local _,weaponHash = GetCurrentPedWeapon(ESX.PlayerData.ped, true)
+							local weapon = ESX.GetWeaponFromHash(weaponHash) 
+							if weapon then
+								local ammoCount = GetAmmoInPedWeapon(ESX.PlayerData.ped, weaponHash)
+								if weapon.name ~= currentWeapon.name then 
+									currentWeapon.Ammo = ammoCount
+									currentWeapon.name = weapon.name
+								else
+									if ammoCount ~= currentWeapon.Ammo then
+										currentWeapon.Ammo = ammoCount
+										TriggerServerEvent('esx:updateWeaponAmmo', weapon.name, ammoCount)
+									end 
+								end   
+							end
+						end    
+					Wait(sleep)
 					end
-				end
-				Wait(sleep)
-			end
-		end)
+			end)
 	end
 
 	-- sync current player coords with server

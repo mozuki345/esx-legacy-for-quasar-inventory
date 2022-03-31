@@ -451,7 +451,7 @@ function OpenIdentityCardMenu(player)
 	end, GetPlayerServerId(player))
 end
 
--- Edit for Quasar Inventory
+-- QS
 function OpenBodySearchMenu(player)
     TriggerServerEvent("inventory:server:OpenInventory", "otherplayer", GetPlayerServerId(player)) --Important.
 end

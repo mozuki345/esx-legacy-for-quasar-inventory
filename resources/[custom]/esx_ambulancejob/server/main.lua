@@ -1,9 +1,5 @@
 local playersHealing, deadPlayers = {}, {}
 
--- Edit for Quasar Inventory
-QS = nil
-TriggerEvent('qs-core:getSharedObject', function(library) QS = library end)
-
 if GetResourceState("esx_phone") ~= 'missing' then
 TriggerEvent('esx_phone:registerNumber', 'ambulance', _U('alert_ambulance'), true, true)
 end
@@ -100,7 +96,7 @@ AddEventHandler('esx_ambulancejob:putInVehicle', function(target)
 	end
 end)
 
--- Edit for Quasar Inventory
+-- QS
 ESX.RegisterServerCallback('esx_ambulancejob:removeItemsAfterRPDeath', function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
 	local qPlayer = QS.GetPlayerFromId(source)

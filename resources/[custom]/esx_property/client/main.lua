@@ -509,6 +509,7 @@ function OpenRoomMenu(property, owner)
 	end)
 end
 
+-- QS
 function OpenRoomInventoryMenu(property, owner)
 	TriggerServerEvent ("inventory:server:OpenInventory", "stash", "Stash_"..owner)
 	TriggerEvent ("inventory:client:SetCurrentStash", "Stash_"..owner)
@@ -786,7 +787,7 @@ CreateThread(function()
 		end
 
 		if letSleep then
-			Wait(500)
+			Wait(1500)
 		end
 	end
 end)
@@ -794,9 +795,9 @@ end)
 -- Key controls
 CreateThread(function()
 	while true do
-		Wait(0)
-
-		if CurrentAction then
+		local Sleep = 1500
+		if CurrentAction then 
+			Sleep = 0
 			ESX.ShowHelpNotification(CurrentActionMsg)
 
 			if IsControlJustReleased(0, 38) then
@@ -816,8 +817,7 @@ CreateThread(function()
 
 				CurrentAction = nil
 			end
-		else
-			Wait(500)
 		end
+		Citizen.Wait(Sleep)
 	end
 end)

@@ -254,7 +254,7 @@ function ESX.GetIdentifier(playerId)
 	end
 end
 
--- Edit for Quasar Inventory
+-- QS
 function ESX.RegisterUsableItem(item, cb)
 	TriggerEvent('inventory:server:useable', item, cb)
 end
@@ -263,7 +263,7 @@ function ESX.UseItem(source, item, data)
 	Core.UsableItemsCallbacks[item](source, item, data)
 end
 
--- Edit for Quasar Inventory
+-- QS
 function ESX.GetItemLabel(item)
     local label = exports['qs-core']:GetItemLabel(item)
     return label

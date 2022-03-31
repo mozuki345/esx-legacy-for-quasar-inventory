@@ -163,47 +163,7 @@ function loadESXPlayer(identifier, playerId, isNew)
 	if gradeObject.skin_male then userData.job.skin_male = json.decode(gradeObject.skin_male) end
 	if gradeObject.skin_female then userData.job.skin_female = json.decode(gradeObject.skin_female) end
 
-	-- Edit for Quasar Inventory
-	--[[if not Config.OxInventory then
-		if result.inventory and result.inventory ~= '' then
-			local inventory = json.decode(result.inventory)
-
-			for name,count in pairs(inventory) do
-				local item = ESX.Items[name]
-
-				if item then
-					foundItems[name] = count
-				else
-					print(('[^3WARNING^7] Ignoring invalid item "%s" for "%s"'):format(name, identifier))
-				end
-			end
-		end
-
-		for name,item in pairs(ESX.Items) do
-			local count = foundItems[name] or 0
-			if count > 0 then userData.weight = userData.weight + (item.weight * count) end
-
-			table.insert(userData.inventory, {
-				name = name,
-				count = count,
-				label = item.label,
-				weight = item.weight,
-				usable = Core.UsableItemsCallbacks[name] ~= nil,
-				rare = item.rare,
-				canRemove = item.canRemove
-			})
-		end
-
-		table.sort(userData.inventory, function(a, b)
-			return a.label < b.label
-		end)
-	else
-		if result.inventory and result.inventory ~= '' then
-			userData.inventory = json.decode(result.inventory)
-		else
-			userData.inventory = {}
-		end
-	end ]]
+	-- QS (native inventory removed)
 
 	-- Group
 	if result.group then
