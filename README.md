@@ -45,4 +45,5 @@ If you want to purchase Quasar Inventory or just want to know more about it :
 Inventory https://quasar-store.com/package/4770732
 
 Preview https://www.youtube.com/watch?v=PsqMPUhJHMg
+
 Thanks for your attention :)
