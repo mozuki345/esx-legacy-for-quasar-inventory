@@ -1,5 +1,10 @@
 local playersHealing, deadPlayers = {}, {}
 
+-- Edit for Quasar Inventory
+QS = nil
+TriggerEvent('qs-core:getSharedObject', function(library) QS = library end)
+-- Edit for Quasar Inventory
+
 if GetResourceState("esx_phone") ~= 'missing' then
 TriggerEvent('esx_phone:registerNumber', 'ambulance', _U('alert_ambulance'), true, true)
 end
